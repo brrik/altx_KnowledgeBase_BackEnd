@@ -17,9 +17,9 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(Auth, scope)
 Client = gspread.authorize(credentials)
 
 #スプシに接続する
-SpreadSheet = Client.open_by_key("まだスプシ作ってない")
-knowledge_sheet = SpreadSheet.worksheet("決めた後スプシのシート名書く") #ナレッジ用シート
-comment_sheet = SpreadSheet.worksheet("決めた後スプシのシート名書く") #コメント用シート
+SpreadSheet = Client.open_by_key("1vwzM38sPQCTwS2dSlq9HQuutd823psOz-KV2wd0HZyE")
+knowledge_sheet = SpreadSheet.worksheet("ナレッジ") #ナレッジ用シート
+comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 
 async def getTest():
     print("hello world")
