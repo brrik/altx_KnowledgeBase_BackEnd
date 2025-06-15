@@ -7,8 +7,8 @@ import requests
 
 #ここからGspread用=============================================
 
-#GspreadからGoogleに接続する用のデータを環境変数（OS）からとってくる
-Auth = "./norse-lotus-423606-i2-353a26d9cd49.json"
+#GspreadからGoogleに接続する用のデータを別ファイルからとってくる
+Auth = "./norse-lotus-423606-i2-353a26d9cd49.json" #別ファイルのパス（予定）
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = Auth
 
 #Gspreadから、Googleの接続用アカウントを使えるようにする認証作業
