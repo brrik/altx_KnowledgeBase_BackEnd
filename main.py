@@ -48,3 +48,8 @@ app.add_middleware(
 @app.get("/")
 async def getMain():
     print("hello, world")
+
+#大西アップデート
+@app.get("/hoge")
+async def hogeta():
+    print("hoge")
