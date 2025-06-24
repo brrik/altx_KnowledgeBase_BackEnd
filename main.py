@@ -53,17 +53,16 @@ app.add_middleware(
 @app.get("/")
 async def getMain():
     print("hello, world")
-
-
-#川空コメント
-
-#川空ブランチにあげる練習
-
+    #川空コメント
+    #川空ブランチにあげる練習
     #升村の愚痴
     print("raigetu nikkinn ooi urepi-")
 
-    #大西アップデート
+#大西アップデート
 @app.get("/hoge")
 async def hogeta():
     print("hoge")
 
+@app.get("/test-item")
+async def test_def():
+    return "this is a test"
