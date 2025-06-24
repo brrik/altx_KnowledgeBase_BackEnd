@@ -49,4 +49,7 @@ app.add_middleware(
 async def getMain():
     print("hello, world")
 
-#岸本githubのテスト
+#大西アップデート
+@app.get("/hoge")
+async def hogeta():
+    print("hoge")
