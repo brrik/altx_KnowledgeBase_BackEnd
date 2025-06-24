@@ -25,7 +25,7 @@ async def getTest():
     print("hello world")
 
 #いまいアップデート
-
+print ("hello")
 
 
 
