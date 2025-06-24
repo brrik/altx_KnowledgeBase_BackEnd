@@ -66,4 +66,6 @@ async def getMain():
 @app.get("/hoge")
 async def hogeta():
     print("hoge")
+    
+#たらひテスト
 
