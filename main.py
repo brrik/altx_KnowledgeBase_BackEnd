@@ -3,7 +3,6 @@ from starlette.middleware.cors import CORSMiddleware #CORS用
 import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
-import requests
 
 #ここからGspread用=============================================
 
@@ -21,17 +20,18 @@ SpreadSheet = Client.open_by_key("1vwzM38sPQCTwS2dSlq9HQuutd823psOz-KV2wd0HZyE")
 knowledge_sheet = SpreadSheet.worksheet("ナレッジ") #ナレッジ用シート
 comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 
-async def getTest():
+def getTest():
     print("hello world")
 
 
-async def test_Tomiyasu():
+def test_Tomiyasu():
     print("I am human.")
 
 #いまいアップデート
 print ("hello")
 
-
+if __name__ == "__main__":
+    test_Tomiyasu()
 
 
 #ここからFastAPI用=============================================
