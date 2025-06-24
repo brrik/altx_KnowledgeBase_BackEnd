@@ -50,3 +50,5 @@ async def getMain():
     print("hello, world")
 
 #川空コメント
+
+＃川空ブランチにあげる練習
