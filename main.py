@@ -24,6 +24,9 @@ comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 async def getTest():
     print("hello world")
 
+async def test_Tomiyasu():
+    print("I am human.")
+
 
 
 
