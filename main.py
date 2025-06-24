@@ -24,10 +24,12 @@ comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 async def getTest():
     print("hello world")
 
+
 async def test_Tomiyasu():
     print("I am human.")
 
-
+#いまいアップデート
+print ("hello")
 
 
 
@@ -51,3 +53,11 @@ app.add_middleware(
 @app.get("/")
 async def getMain():
     print("hello, world")
+
+    #升村の愚痴
+    print("raigetu nikkinn ooi pien")
+
+    #大西アップデート
+@app.get("/hoge")
+async def hogeta():
+    print("hoge")
