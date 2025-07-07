@@ -68,4 +68,6 @@ async def hogeta():
     print("hoge")
     
 #たらひテスト
-
+@app.get("/test-tarahi")
+async def tarahi_test_def():
+    return "これはtarahiのテストです"
