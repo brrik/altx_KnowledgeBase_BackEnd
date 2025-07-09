@@ -71,3 +71,8 @@ async def tarahi_test_def():
 @app.get("/test-item")
 async def test_def():
     return "this is a test"
+
+#masu test
+@app.get("/gorenkin-saiko")
+async def gorenkin():
+    return "これはmasuのテストです"
