@@ -76,3 +76,8 @@ async def test_def():
 @app.get("/gorenkin-saiko")
 async def gorenkin():
     return "これはmasuのテストです"
+
+#いまいテスト
+@app.get("/natsubategimi")
+async def natsubate():
+    return "これはimaiのテストです"
