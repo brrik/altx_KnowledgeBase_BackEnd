@@ -4,6 +4,8 @@ import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 import requests
+import pandas as pd
+
 
 #ここからGspread用=============================================
 
@@ -21,17 +23,16 @@ SpreadSheet = Client.open_by_key("1vwzM38sPQCTwS2dSlq9HQuutd823psOz-KV2wd0HZyE")
 knowledge_sheet = SpreadSheet.worksheet("ナレッジ") #ナレッジ用シート
 comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 
-async def getTest():
-    print("hello world")
 
 
-async def test_Tomiyasu():
-    print("I am human.")
-
-#いまいアップデート
-print ("hello")
-
-
+def get_all_value_rensyu():
+    values = knowledge_sheet.get_all_values()
+    header = values[0]
+    body = values[1:]
+    df = pd.DataFrame(body, columns=header)
+    selected_df = df[["ID", "Title", "PostedBy"]]
+    print(selected_df.to_string(index=False))
+get_all_value_rensyu()
 
 
 #ここからFastAPI用=============================================
