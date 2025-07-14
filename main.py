@@ -4,6 +4,7 @@ import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 import requests
+from pydantic import BaseModel
 
 #ここからGspread用=============================================
 
@@ -50,6 +51,8 @@ app.add_middleware(
 )
 # ここまで
 
+#### 以下get通信 ####
+
 @app.get("/")
 async def getMain():
     print("hello, world")
@@ -81,3 +84,23 @@ async def gorenkin():
 @app.get("/natsubategimi")
 async def natsubate():
     return "これはimaiのテストです"
+
+#### 以上get通信 ####
+
+#### 以下post通信 ####
+
+# 受け取るデータの型を定義
+class Item(BaseModel):
+    title: str
+    name: str
+    detail: str
+    tag1: str
+
+# POSTリクエストを受け取るエンドポイント
+@app.post("/post-test")
+async def post_test(item: Item):
+    return {"message": "受信成功", "受け取ったデータ": item}
+
+
+
+#### 以上post通信 ####
