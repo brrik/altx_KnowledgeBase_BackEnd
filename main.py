@@ -95,6 +95,7 @@ class Item(BaseModel):
     name: str
     detail: str
     tag1: str
+    tag2: str   #今井追加
 
 # POSTリクエストを受け取るエンドポイント
 @app.post("/post-test")
