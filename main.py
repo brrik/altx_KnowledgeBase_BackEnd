@@ -4,7 +4,6 @@ import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 import requests
-from pydantic import BaseModel
 import pandas as pd
 
 
@@ -26,15 +25,39 @@ comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 
 
 
-def get_all_value_rensyu():
+def get_all_value():
     values = knowledge_sheet.get_all_values()
     header = values[0]
     body = values[1:]
     df = pd.DataFrame(body, columns=header)
     selected_df = df[["ID", "Title", "PostedBy"]]
     print(selected_df.to_string(index=False))
-get_all_value_rensyu()
 
+
+def get_filtered_data(knowledge_sheet, comment_sheet, target_id):
+    # --- ナレッジシート処理 ---
+    knowledge_values = knowledge_sheet.get_all_values()
+    knowledge_header = knowledge_values[0]
+    knowledge_body = knowledge_values[1:]
+    knowledge_df = pd.DataFrame(knowledge_body, columns=knowledge_header)
+    filtered_knowledge_df = knowledge_df[knowledge_df["ID"] == str(target_id)]
+
+    # --- コメントシート処理 ---
+    comment_values = comment_sheet.get_all_values()
+    comment_header = comment_values[0]
+    comment_body = comment_values[1:]
+    comment_df = pd.DataFrame(comment_body, columns=comment_header)
+    filtered_comment_df = comment_df[comment_df["KnowledgeID"] == str(target_id)]
+    return filtered_knowledge_df, filtered_comment_df
+
+filtered_knowledge, filtered_comments = get_filtered_data(
+    knowledge_sheet,
+    comment_sheet,
+    target_id="3"
+)
+
+print(filtered_knowledge.to_string(index=False))
+print(filtered_comments.to_string(index=False))
 
 #ここからFastAPI用=============================================
 # CORS
@@ -51,8 +74,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 # ここまで
-
-#### 以下get通信 ####
 
 @app.get("/")
 async def getMain():
@@ -80,29 +101,3 @@ async def test_def():
 @app.get("/gorenkin-saiko")
 async def gorenkin():
     return "これはmasuのテストです"
-
-#いまいテスト
-@app.get("/natsubategimi")
-async def natsubate():
-    return "これはimaiのテストです"
-
-#### 以上get通信 ####
-
-#### 以下post通信 ####
-
-# 受け取るデータの型を定義
-class Item(BaseModel):
-    title: str
-    name: str
-    detail: str
-    tag1: str
-    tag2: str   #今井追加
-
-# POSTリクエストを受け取るエンドポイント
-@app.post("/post-test")
-async def post_test(item: Item):
-    return {"message": "受信成功", "受け取ったデータ": item}
-
-
-
-#### 以上post通信 ####
