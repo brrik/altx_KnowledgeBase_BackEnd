@@ -4,6 +4,7 @@ import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 import requests
+from pydantic import BaseModel
 import pandas as pd
 
 
@@ -25,39 +26,15 @@ comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 
 
 
-def get_all_value():
+def get_all_value_rensyu():
     values = knowledge_sheet.get_all_values()
     header = values[0]
     body = values[1:]
     df = pd.DataFrame(body, columns=header)
     selected_df = df[["ID", "Title", "PostedBy"]]
     print(selected_df.to_string(index=False))
+get_all_value_rensyu()
 
-
-def get_filtered_data(knowledge_sheet, comment_sheet, target_id):
-    # --- ナレッジシート処理 ---
-    knowledge_values = knowledge_sheet.get_all_values()
-    knowledge_header = knowledge_values[0]
-    knowledge_body = knowledge_values[1:]
-    knowledge_df = pd.DataFrame(knowledge_body, columns=knowledge_header)
-    filtered_knowledge_df = knowledge_df[knowledge_df["ID"] == str(target_id)]
-
-    # --- コメントシート処理 ---
-    comment_values = comment_sheet.get_all_values()
-    comment_header = comment_values[0]
-    comment_body = comment_values[1:]
-    comment_df = pd.DataFrame(comment_body, columns=comment_header)
-    filtered_comment_df = comment_df[comment_df["KnowledgeID"] == str(target_id)]
-    return filtered_knowledge_df, filtered_comment_df
-
-filtered_knowledge, filtered_comments = get_filtered_data(
-    knowledge_sheet,
-    comment_sheet,
-    target_id="3"
-)
-
-print(filtered_knowledge.to_string(index=False))
-print(filtered_comments.to_string(index=False))
 
 #ここからFastAPI用=============================================
 # CORS
@@ -74,6 +51,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 # ここまで
+
+#### 以下get通信 ####
 
 @app.get("/")
 async def getMain():
@@ -118,7 +97,6 @@ class Item(BaseModel):
     detail: str
     tag1: str
     tag2: str   #今井追加
-    tag3: str   #升村追加
 
 # POSTリクエストを受け取るエンドポイント
 @app.post("/post-test")
