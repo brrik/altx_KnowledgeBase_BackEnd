@@ -73,7 +73,7 @@ async def init_get_items():
 #### 以下post通信 #################################
 
 # 受け取るデータの型を定義
-class Item(BaseModel):
+class KnowledgeItem(BaseModel):
     Title: str
     PostedBy: str
     Content: str
@@ -82,17 +82,10 @@ class Item(BaseModel):
     tag3: str
 
 # POSTエンドポイント
-@app.post("/post-items")
-async def post_items(item: Item):
-        knowledge_sheet.append_row([
-        item.Title,
-        item.PostedBy,
-        item.Content,
-        item.tag1,
-        item.tag2,
-        item.tag3
-        ])  
-        return {"message": "受信成功", "受け取ったデータ": item}
+@app.post("/post-knowledge")
+async def post_knowledge(item: KnowledgeItem):
+    add_knowledge(knowledge_sheet, item.dict())
+    return {"message": "スプレッドシートにナレッジ追加成功", "posted_data": item}
 
 
 
