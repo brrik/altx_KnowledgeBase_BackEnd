@@ -52,24 +52,43 @@ app.add_middleware(
 )
 # ここまで
 
-#### 以下get通信 ##################################
+#### 以下get通信 ####
 
-@app.get("/items")
-async def init_get_items():
-    records = knowledge_sheet.get_all_records()
+@app.get("/")
+async def getMain():
+    print("hello, world")
+    #川空コメント
+    #川空ブランチにあげる練習
+    #升村の愚痴
+    print("raigetu nikkinn ooi urepi-")
+
+#大西アップデート
+@app.get("/hoge")
+async def hogeta():
+    print("hoge")
     
-    # 必要なカラムだけ抽出（存在する場合のみ）＋上から5件
-    filtered_records = [
-        {k: row[k] for k in ["ID", "Title", "PostedBy", "Content"] if k in row}
-        for row in records[:5]
-    ]
+#たらひテスト
+@app.get("/test-tarahi")
+async def tarahi_test_def():
+    return "これはtarahiのテストです"
 
-    return {"data": filtered_records}
+@app.get("/test-item")
+async def test_def():
+    return "this is a test"
 
+#masu test
+@app.get("/gorenkin-saiko")
+async def gorenkin():
+    return "これはmasuのテストです"
 
-#### 以上get通信 ##################################
+#いまいテスト
+@app.get("/natsubategimi")
+async def natsubate():
+    return "これはimaiのテストです"
 
-#### 以下post通信 #################################
+#### 以上get通信 ####
+
+#### 以下post通信 ####
 
 # 受け取るデータの型を定義
 class Item(BaseModel):
@@ -78,7 +97,6 @@ class Item(BaseModel):
     detail: str
     tag1: str
     tag2: str   #今井追加
-    tag3: str   #升村追加
 
 # POSTリクエストを受け取るエンドポイント
 @app.post("/post-test")
@@ -87,7 +105,7 @@ async def post_test(item: Item):
 
 
 
-#### 以上post通信 ###################################
+#### 以上post通信 ####
  
 
 
