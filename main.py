@@ -77,9 +77,9 @@ class KnowledgeItem(BaseModel):
     Title: str
     PostedBy: str
     Content: str
-    tag1: str
-    tag2: str
-    tag3: str
+    Tag1: str
+    Tag2: str
+    Tag3: str
 
 # POSTエンドポイント
 @app.post("/post-knowledge")
@@ -155,17 +155,18 @@ def add_comment(comment_sheet, comment_data):
 #投稿データと実行
 
 #ナレッジ投稿データ（Jsonができていないので仮）
-data = {
-    "Title": "最近のブーム",
-    "PostedBy": "川空のどか",
-    "Content": "蒸籠でごはんをつくること！",
-    "Tag1": "ご飯",
-    "Tag2": "日記",
-    "Tag3": "生活"
-}
-
-#ナレッジ関数実行
-add_knowledge(knowledge_sheet, data)
+##post投稿エンドポイント作成したので一旦コメントアウトした。tarahi
+#data = {
+#    "Title": "最近のブーム",
+#    "PostedBy": "川空のどか",
+#    "Content": "蒸籠でごはんをつくること！",
+#    "Tag1": "ご飯",
+#    "Tag2": "日記",
+#    "Tag3": "生活"
+#}
+#
+##ナレッジ関数実行
+#add_knowledge(knowledge_sheet, data)
 
 
 #コメント投稿データ（Jsonができていないので仮）
