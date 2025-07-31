@@ -56,8 +56,8 @@ filtered_knowledge, filtered_comments = get_filtered_data(
     target_id="3"
 )
 
-#print(filtered_knowledge.to_string(index=False))
-#print(filtered_comments.to_string(index=False))
+print(filtered_knowledge.to_string(index=False))
+print(filtered_comments.to_string(index=False))
 
 #ここからFastAPI用=============================================
 # CORS
