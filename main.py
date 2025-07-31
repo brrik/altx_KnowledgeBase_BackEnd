@@ -54,6 +54,7 @@ app.add_middleware(
 
 #### 以下get通信 ##################################
 
+#起動時にスプレッドシートの上から５件の"ID", "Title", "PostedBy", "Content"を取得する。
 @app.get("/items")
 async def init_get_items():
     records = knowledge_sheet.get_all_records()
@@ -73,17 +74,25 @@ async def init_get_items():
 
 # 受け取るデータの型を定義
 class Item(BaseModel):
-    title: str
-    name: str
-    detail: str
+    Title: str
+    PostedBy: str
+    Content: str
     tag1: str
-    tag2: str   #今井追加
-    tag3: str   #升村追加
+    tag2: str
+    tag3: str
 
-# POSTリクエストを受け取るエンドポイント
-@app.post("/post-test")
-async def post_test(item: Item):
-    return {"message": "受信成功", "受け取ったデータ": item}
+# POSTエンドポイント
+@app.post("/post-items")
+async def post_items(item: Item):
+        knowledge_sheet.append_row([
+        item.Title,
+        item.PostedBy,
+        item.Content,
+        item.tag1,
+        item.tag2,
+        item.tag3
+        ])  
+        return {"message": "受信成功", "受け取ったデータ": item}
 
 
 
