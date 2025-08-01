@@ -1,4 +1,4 @@
-gitfrom fastapi import FastAPI
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware #CORS用
 import gspread
 import os
