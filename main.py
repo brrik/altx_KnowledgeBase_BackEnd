@@ -75,59 +75,45 @@ app.add_middleware(
 )
 # ここまで
 
-@app.get("/")
-async def getMain():
-    print("hello, world")
-    #川空コメント
-    #川空ブランチにあげる練習
-    #升村の愚痴
-    print("raigetu nikkinn ooi urepi-")
+#### 以下get通信 ##################################
 
-#大西アップデート
-@app.get("/hoge")
-async def hogeta():
-    print("hoge")
+
+#起動時にスプレッドシートの上から５件の"ID", "Title", "PostedBy", "Content"を取得する。
+@app.get("/items")
+async def init_get_items():
+    records = knowledge_sheet.get_all_records()
     
-#たらひテスト
-@app.get("/test-tarahi")
-async def tarahi_test_def():
-    return "これはtarahiのテストです"
+    # 必要なカラムだけ抽出（存在する場合のみ）＋上から5件
+    filtered_records = [
+        {k: row[k] for k in ["ID", "Title", "PostedBy", "Content"] if k in row}
+        for row in records[:5]
+    ]
 
-@app.get("/test-item")
-async def test_def():
-    return "this is a test"
+    return {"data": filtered_records}
 
-#masu test
-@app.get("/gorenkin-saiko")
-async def gorenkin():
-    return "これはmasuのテストです"
 
-#いまいテスト
-@app.get("/natsubategimi")
-async def natsubate():
-    return "これはimaiのテストです"
+#### 以上get通信 ##################################
 
-#### 以上get通信 ####
-
-#### 以下post通信 ####
+#### 以下post通信 #################################
 
 # 受け取るデータの型を定義
-class Item(BaseModel):
-    title: str
-    name: str
-    detail: str
-    tag1: str
-    tag2: str   #今井追加
-    tag3: str   #升村追加
+class KnowledgeItem(BaseModel):
+    Title: str
+    PostedBy: str
+    Content: str
+    Tag1: str
+    Tag2: str
+    Tag3: str
 
-# POSTリクエストを受け取るエンドポイント
-@app.post("/post-test")
-async def post_test(item: Item):
-    return {"message": "受信成功", "受け取ったデータ": item}
+# POSTエンドポイント
+@app.post("/post-knowledge")
+async def post_knowledge(item: KnowledgeItem):
+    add_knowledge(knowledge_sheet, item.dict())
+    return {"message": "スプレッドシートにナレッジ追加成功", "posted_data": item}
 
 
 
-#### 以上post通信 ####
+#### 以上post通信 ###################################
  
 
 
@@ -193,17 +179,18 @@ def add_comment(comment_sheet, comment_data):
 #投稿データと実行
 
 #ナレッジ投稿データ（Jsonができていないので仮）
-data = {
-    "Title": "最近のブーム",
-    "PostedBy": "川空のどか",
-    "Content": "蒸籠でごはんをつくること！",
-    "Tag1": "ご飯",
-    "Tag2": "日記",
-    "Tag3": "生活"
-}
-
-#ナレッジ関数実行
-add_knowledge(knowledge_sheet, data)
+##post投稿エンドポイント作成したので一旦コメントアウトした。tarahi
+#data = {
+#    "Title": "最近のブーム",
+#    "PostedBy": "川空のどか",
+#    "Content": "蒸籠でごはんをつくること！",
+#    "Tag1": "ご飯",
+#    "Tag2": "日記",
+#    "Tag3": "生活"
+#}
+#
+##ナレッジ関数実行
+#add_knowledge(knowledge_sheet, data)
 
 
 #コメント投稿データ（Jsonができていないので仮）
