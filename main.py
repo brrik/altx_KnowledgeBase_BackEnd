@@ -4,6 +4,7 @@ import gspread
 import os
 from oauth2client.service_account import ServiceAccountCredentials
 import requests
+from pydantic import BaseModel
 import pandas as pd
 
 
