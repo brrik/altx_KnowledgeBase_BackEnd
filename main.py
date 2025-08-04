@@ -26,15 +26,39 @@ comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 
 
 
-def get_all_value_rensyu():
+def get_all_value():
     values = knowledge_sheet.get_all_values()
     header = values[0]
     body = values[1:]
     df = pd.DataFrame(body, columns=header)
     selected_df = df[["ID", "Title", "PostedBy"]]
     print(selected_df.to_string(index=False))
-get_all_value_rensyu()
 
+
+def get_filtered_data(knowledge_sheet, comment_sheet, target_id):
+    # --- ナレッジシート処理 ---
+    knowledge_values = knowledge_sheet.get_all_values()
+    knowledge_header = knowledge_values[0]
+    knowledge_body = knowledge_values[1:]
+    knowledge_df = pd.DataFrame(knowledge_body, columns=knowledge_header)
+    filtered_knowledge_df = knowledge_df[knowledge_df["ID"] == str(target_id)]
+
+    # --- コメントシート処理 ---
+    comment_values = comment_sheet.get_all_values()
+    comment_header = comment_values[0]
+    comment_body = comment_values[1:]
+    comment_df = pd.DataFrame(comment_body, columns=comment_header)
+    filtered_comment_df = comment_df[comment_df["KnowledgeID"] == str(target_id)]
+    return filtered_knowledge_df, filtered_comment_df
+
+filtered_knowledge, filtered_comments = get_filtered_data(
+    knowledge_sheet,
+    comment_sheet,
+    target_id="3"
+)
+
+print(filtered_knowledge.to_string(index=False))
+print(filtered_comments.to_string(index=False))
 
 #ここからFastAPI用=============================================
 # CORS
@@ -52,57 +76,128 @@ app.add_middleware(
 )
 # ここまで
 
-#### 以下get通信 ####
+#### 以下get通信 ##################################
 
-@app.get("/")
-async def getMain():
-    print("hello, world")
-    #川空コメント
-    #川空ブランチにあげる練習
-    #升村の愚痴
-    print("raigetu nikkinn ooi urepi-")
 
-#大西アップデート
-@app.get("/hoge")
-async def hogeta():
-    print("hoge")
+#起動時にスプレッドシートの上から５件の"ID", "Title", "PostedBy", "Content"を取得する。
+@app.get("/items")
+async def init_get_items():
+    records = knowledge_sheet.get_all_records()
     
-#たらひテスト
-@app.get("/test-tarahi")
-async def tarahi_test_def():
-    return "これはtarahiのテストです"
+    # 必要なカラムだけ抽出（存在する場合のみ）＋上から5件
+    filtered_records = [
+        {k: row[k] for k in ["ID", "Title", "PostedBy", "Content"] if k in row}
+        for row in records[:5]
+    ]
 
-@app.get("/test-item")
-async def test_def():
-    return "this is a test"
+    return {"data": filtered_records}
 
-#masu test
-@app.get("/gorenkin-saiko")
-async def gorenkin():
-    return "これはmasuのテストです"
 
-#いまいテスト
-@app.get("/natsubategimi")
-async def natsubate():
-    return "これはimaiのテストです"
+#### 以上get通信 ##################################
 
-#### 以上get通信 ####
-
-#### 以下post通信 ####
+#### 以下post通信 #################################
 
 # 受け取るデータの型を定義
-class Item(BaseModel):
-    title: str
-    name: str
-    detail: str
-    tag1: str
-    tag2: str   #今井追加
+class KnowledgeItem(BaseModel):
+    Title: str
+    PostedBy: str
+    Content: str
+    Tag1: str
+    Tag2: str
+    Tag3: str
 
-# POSTリクエストを受け取るエンドポイント
-@app.post("/post-test")
-async def post_test(item: Item):
-    return {"message": "受信成功", "受け取ったデータ": item}
+# POSTエンドポイント
+@app.post("/post-knowledge")
+async def post_knowledge(item: KnowledgeItem):
+    add_knowledge(knowledge_sheet, item.dict())
+    return {"message": "スプレッドシートにナレッジ追加成功", "posted_data": item}
 
 
 
-#### 以上post通信 ####
+#### 以上post通信 ###################################
+ 
+
+
+#スプレッドシートへの投稿用コード_川空作成分
+
+#関数定義
+
+#ナレッジ投稿関数
+def add_knowledge(knowledge_sheet, data):
+
+#ヘッダー情報取得
+    knowledge_header = knowledge_sheet.row_values(1)
+
+#IDの採番
+    all_rows = knowledge_sheet.get_all_values()
+    id_index = knowledge_header.index("ID")
+    existing_ids = [int(row[id_index]) for row in all_rows[1:] if row[id_index].isdigit()]
+    new_id = max(existing_ids, default=0) + 1
+
+#行データの作成
+    new_row = [""] * len(knowledge_header)
+    new_row[id_index] = str(new_id)
+
+    for key,value in data.items():
+        if key in knowledge_header:
+            col_index = knowledge_header.index(key)
+            new_row[col_index] = value
+
+#シートへ書込み
+    next_row = len(all_rows) + 1 #次の空行を取得（既存行数+1）
+    knowledge_sheet.insert_row(new_row,next_row)
+
+
+
+#コメント投稿関数
+def add_comment(comment_sheet, comment_data):
+#ヘッダー情報取得
+    comment_header = comment_sheet.row_values(1)
+
+#IDの採番
+    all_rows = comment_sheet.get_all_values()
+    id_index =comment_header.index("CommentID") 
+    existing_ids = [int(row[id_index]) for row in all_rows[1:] if row[id_index].isdigit()]
+    new_comment_id = max(existing_ids, default=0) + 1
+
+#行データの作成
+    new_row = [""] * len(comment_header)
+    new_row[id_index] = str(new_comment_id)
+
+    for key,value in comment_data.items():
+        if key in comment_header:
+            col_index = comment_header.index(key)
+            new_row[col_index] = value
+
+#シートへ書込み
+    next_row = len(all_rows) +1
+    comment_sheet.insert_row(new_row,next_row)
+
+
+
+#投稿データと実行
+
+#ナレッジ投稿データ（Jsonができていないので仮）
+##post投稿エンドポイント作成したので一旦コメントアウトした。tarahi
+#data = {
+#    "Title": "最近のブーム",
+#    "PostedBy": "川空のどか",
+#    "Content": "蒸籠でごはんをつくること！",
+#    "Tag1": "ご飯",
+#    "Tag2": "日記",
+#    "Tag3": "生活"
+#}
+#
+##ナレッジ関数実行
+#add_knowledge(knowledge_sheet, data)
+
+
+#コメント投稿データ（Jsonができていないので仮）
+comment_data = {
+    "KnowledgeID": "3",  #対象のIDナレッジにコメントする
+    "PostedBy": "川空のどか",
+    "Content": "めっちゃ参考になりました！最高！！！"
+}
+
+#コメント関数実行
+add_comment(comment_sheet, comment_data)
