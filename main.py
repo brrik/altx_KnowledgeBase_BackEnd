@@ -149,7 +149,6 @@ def add_knowledge(knowledge_sheet, data):
     print(f"書き込み完了：ID {new_id}")
 
 
-
 #コメント投稿関数
 def add_comment(comment_sheet, comment_data):
 #ヘッダー情報取得
@@ -173,7 +172,6 @@ def add_comment(comment_sheet, comment_data):
 #シートへ書込み
     next_row = len(all_rows) +1
     comment_sheet.insert_row(new_row,next_row)
-    print(f"コメントの書き込み完了：ID {new_comment_id}")
 
 
 
@@ -193,13 +191,9 @@ def add_comment(comment_sheet, comment_data):
 ##ナレッジ関数実行
 #add_knowledge(knowledge_sheet, data)
 
-
 #コメント投稿データ（Jsonができていないので仮）
 comment_data = {
     "KnowledgeID": "3",  #対象のIDナレッジにコメントする
     "PostedBy": "川空のどか",
     "Content": "めっちゃ参考になりました！最高！！！"
 }
-
-#コメント関数実行
-add_comment(comment_sheet, comment_data)
