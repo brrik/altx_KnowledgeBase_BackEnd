@@ -198,6 +198,3 @@ comment_data = {
     "PostedBy": "川空のどか",
     "Content": "めっちゃ参考になりました！最高！！！"
 }
-
-#コメント関数実行
-add_comment(comment_sheet, comment_data)
