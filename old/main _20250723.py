@@ -26,39 +26,15 @@ comment_sheet = SpreadSheet.worksheet("コメント") #コメント用シート
 
 
 
-def get_all_value():
+def get_all_value_rensyu():
     values = knowledge_sheet.get_all_values()
     header = values[0]
     body = values[1:]
     df = pd.DataFrame(body, columns=header)
     selected_df = df[["ID", "Title", "PostedBy"]]
     print(selected_df.to_string(index=False))
+get_all_value_rensyu()
 
-
-def get_filtered_data(knowledge_sheet, comment_sheet, target_id):
-    # --- ナレッジシート処理 ---
-    knowledge_values = knowledge_sheet.get_all_values()
-    knowledge_header = knowledge_values[0]
-    knowledge_body = knowledge_values[1:]
-    knowledge_df = pd.DataFrame(knowledge_body, columns=knowledge_header)
-    filtered_knowledge_df = knowledge_df[knowledge_df["ID"] == str(target_id)]
-
-    # --- コメントシート処理 ---
-    comment_values = comment_sheet.get_all_values()
-    comment_header = comment_values[0]
-    comment_body = comment_values[1:]
-    comment_df = pd.DataFrame(comment_body, columns=comment_header)
-    filtered_comment_df = comment_df[comment_df["KnowledgeID"] == str(target_id)]
-    return filtered_knowledge_df, filtered_comment_df
-
-filtered_knowledge, filtered_comments = get_filtered_data(
-    knowledge_sheet,
-    comment_sheet,
-    target_id="3"
-)
-
-print(filtered_knowledge.to_string(index=False))
-print(filtered_comments.to_string(index=False))
 
 #ここからFastAPI用=============================================
 # CORS
@@ -76,45 +52,60 @@ app.add_middleware(
 )
 # ここまで
 
-#### 以下get通信 ##################################
+#### 以下get通信 ####
 
+@app.get("/")
+async def getMain():
+    print("hello, world")
+    #川空コメント
+    #川空ブランチにあげる練習
+    #升村の愚痴
+    print("raigetu nikkinn ooi urepi-")
 
-#起動時にスプレッドシートの上から５件の"ID", "Title", "PostedBy", "Content"を取得する。
-@app.get("/items")
-async def init_get_items():
-    records = knowledge_sheet.get_all_records()
+#大西アップデート
+@app.get("/hoge")
+async def hogeta():
+    print("hoge")
     
-    # 必要なカラムだけ抽出（存在する場合のみ）＋上から5件
-    filtered_records = [
-        {k: row[k] for k in ["ID", "Title", "PostedBy", "Content"] if k in row}
-        for row in records[:5]
-    ]
+#たらひテスト
+@app.get("/test-tarahi")
+async def tarahi_test_def():
+    return "これはtarahiのテストです"
 
-    return {"data": filtered_records}
+@app.get("/test-item")
+async def test_def():
+    return "this is a test"
 
+#masu test
+@app.get("/gorenkin-saiko")
+async def gorenkin():
+    return "これはmasuのテストです"
 
-#### 以上get通信 ##################################
+#いまいテスト
+@app.get("/natsubategimi")
+async def natsubate():
+    return "これはimaiのテストです"
 
-#### 以下post通信 #################################
+#### 以上get通信 ####
+
+#### 以下post通信 ####
 
 # 受け取るデータの型を定義
-class KnowledgeItem(BaseModel):
-    Title: str
-    PostedBy: str
-    Content: str
-    Tag1: str
-    Tag2: str
-    Tag3: str
+class Item(BaseModel):
+    title: str
+    name: str
+    detail: str
+    tag1: str
+    tag2: str   #今井追加
 
-# POSTエンドポイント
-@app.post("/post-knowledge")
-async def post_knowledge(item: KnowledgeItem):
-    add_knowledge(knowledge_sheet, item.dict())
-    return {"message": "スプレッドシートにナレッジ追加成功", "posted_data": item}
+# POSTリクエストを受け取るエンドポイント
+@app.post("/post-test")
+async def post_test(item: Item):
+    return {"message": "受信成功", "受け取ったデータ": item}
 
 
 
-#### 以上post通信 ###################################
+#### 以上post通信 ####
  
 
 
@@ -149,6 +140,7 @@ def add_knowledge(knowledge_sheet, data):
     print(f"書き込み完了：ID {new_id}")
 
 
+
 #コメント投稿関数
 def add_comment(comment_sheet, comment_data):
 #ヘッダー情報取得
@@ -172,24 +164,25 @@ def add_comment(comment_sheet, comment_data):
 #シートへ書込み
     next_row = len(all_rows) +1
     comment_sheet.insert_row(new_row,next_row)
+    print(f"コメントの書き込み完了：ID {new_comment_id}")
 
 
 
 #投稿データと実行
 
 #ナレッジ投稿データ（Jsonができていないので仮）
-##post投稿エンドポイント作成したので一旦コメントアウトした。tarahi
-#data = {
-#    "Title": "最近のブーム",
-#    "PostedBy": "川空のどか",
-#    "Content": "蒸籠でごはんをつくること！",
-#    "Tag1": "ご飯",
-#    "Tag2": "日記",
-#    "Tag3": "生活"
-#}
-#
-##ナレッジ関数実行
-#add_knowledge(knowledge_sheet, data)
+data = {
+    "Title": "最近のブーム",
+    "PostedBy": "川空のどか",
+    "Content": "蒸籠でごはんをつくること！",
+    "Tag1": "ご飯",
+    "Tag2": "日記",
+    "Tag3": "生活"
+}
+
+#ナレッジ関数実行
+add_knowledge(knowledge_sheet, data)
+
 
 #コメント投稿データ（Jsonができていないので仮）
 comment_data = {
@@ -197,3 +190,6 @@ comment_data = {
     "PostedBy": "川空のどか",
     "Content": "めっちゃ参考になりました！最高！！！"
 }
+
+#コメント関数実行
+add_comment(comment_sheet, comment_data)
