@@ -31,9 +31,9 @@ def get_all_value():
     header = values[0]
     body = values[1:]
     df = pd.DataFrame(body, columns=header)
-    selected_df = df[["ID", "Title", "PostedBy"]]
-    print(selected_df.to_string(index=False))
-
+    selected_df = df[["ID", "Title", "PostedBy"]].head(12)
+    Selected_Knoledge = selected_df.to_dict(orient='records')
+    return Selected_Knoledge
 
 def get_filtered_data(knowledge_sheet, comment_sheet, target_id):
     # --- ナレッジシート処理 ---
@@ -42,14 +42,15 @@ def get_filtered_data(knowledge_sheet, comment_sheet, target_id):
     knowledge_body = knowledge_values[1:]
     knowledge_df = pd.DataFrame(knowledge_body, columns=knowledge_header)
     filtered_knowledge_df = knowledge_df[knowledge_df["ID"] == str(target_id)]
-
+    filtered_knowledge = filtered_knowledge_df.to_dict(orient='records')
     # --- コメントシート処理 ---
     comment_values = comment_sheet.get_all_values()
     comment_header = comment_values[0]
     comment_body = comment_values[1:]
     comment_df = pd.DataFrame(comment_body, columns=comment_header)
     filtered_comment_df = comment_df[comment_df["KnowledgeID"] == str(target_id)]
-    return filtered_knowledge_df, filtered_comment_df
+    filtered_comment = filtered_comment_df.to_dict(orient='records')
+    return filtered_knowledge, filtered_comment
 
 filtered_knowledge, filtered_comments = get_filtered_data(
     knowledge_sheet,
@@ -57,8 +58,10 @@ filtered_knowledge, filtered_comments = get_filtered_data(
     target_id="3"
 )
 
-print(filtered_knowledge.to_string(index=False))
-print(filtered_comments.to_string(index=False))
+selected_Knoledge = get_all_value()
+print(selected_Knoledge)
+print(filtered_knowledge)
+print(filtered_comments)
 
 #ここからFastAPI用=============================================
 # CORS
