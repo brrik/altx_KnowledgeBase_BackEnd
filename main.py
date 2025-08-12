@@ -95,6 +95,17 @@ async def init_get_items():
 
     return {"data": filtered_records}
 
+@app.get("/items1")
+async def init_get_all_values():
+    records = knowledge_sheet.get_all_records()
+
+    # 必要なカラムだけ抽出（存在する場合のみ）存在する全行を取得
+    filtered_records = [
+        {k: row[k] for k in ["ID", "Title", "PostedBy"] if k in row}
+        for row in records
+    ]
+
+    return {"data": filtered_records}
 
 #### 以上get通信 ##################################
 
