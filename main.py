@@ -31,7 +31,7 @@ def get_all_value():
     header = values[0]
     body = values[1:]
     df = pd.DataFrame(body, columns=header)
-    selected_df = df[["ID", "Title", "PostedBy"]].head(12)
+    selected_df = df[["ID", "Title", "PostedBy"]].head(10)
     Selected_Knoledge = selected_df.to_dict(orient='records')
     return Selected_Knoledge
 
@@ -97,14 +97,8 @@ async def init_get_items():
 
 @app.get("/items1")
 async def init_get_all_values():
-    records = knowledge_sheet.get_all_records()
-
-    # 必要なカラムだけ抽出（存在する場合のみ）存在する全行を取得
-    filtered_records = [
-        {k: row[k] for k in ["ID", "Title", "PostedBy"] if k in row}
-        for row in records
-    ]
-
+    # get_all_value関数を利用してフロント起動時の10件を取得
+    filtered_records = get_all_value()
     return {"data": filtered_records}
 
 #### 以上get通信 ##################################
