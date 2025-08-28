@@ -101,6 +101,22 @@ async def init_get_all_values():
     filtered_records = get_all_value()
     return {"data": filtered_records}
 
+#スプレッドシートから全レコード取得
+@app.get("/items/{id}")
+async def init_get_all_values(id: str):
+    values = knowledge_sheet.get_all_values()
+
+    # ヘッダー行を取得（1行目）
+    headers = values[0]
+
+    # データ行をループして対象IDを探す
+    for row in values[1:]:
+        if str(row[0]) == str(id):
+            # ヘッダーと行データを結合して辞書形式にする
+            return {"data": dict(zip(headers, row))}
+
+
+
 #### 以上get通信 ##################################
 
 #### 以下post通信 #################################
