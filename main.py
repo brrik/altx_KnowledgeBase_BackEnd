@@ -114,7 +114,33 @@ async def init_get_all_values(id: str):
         if str(row[0]) == str(id):
             # ヘッダーと行データを結合して辞書形式にする
             return {"data": dict(zip(headers, row))}
+        
+#　ポストにいいねをする
+@app.get("/nice/{id}")
+async def nice_post(id: int):
+    # すべてのデータを取得（ヘッダー付き辞書形式）
+    records = knowledge_sheet.get_all_records() 
+    
+    row_index = None
+    for idx, row in enumerate(records, start=2):  # データは2行目から
+        if row["id"] == id:
+            row_index = idx
+            break
 
+    if row_index is None:
+        # 存在しなければ新規追加（ヘッダーに合わせて列を並べる）
+        knowledge_sheet.append_row([id, 1])  # 例: [id, nice] の順
+        return {"message": f"ID {id} に初めていいねしました！", "nice": 1}
+    else:
+        # 既存レコードを更新（ヘッダー名 "nice" に対応する列番号を探す）
+        header = knowledge_sheet.row_values(1)  # 1行目（ヘッダー）
+        nice_col = header.index("nice") + 1  # 1始まりに変換
+
+        current_nice = int(knowledge_sheet.cell(row_index, nice_col).value)
+        new_nice = current_nice + 1
+        knowledge_sheet.update_cell(row_index, nice_col, new_nice)
+
+        return {"message": f"ID {id} にいいねしました！", "nice": new_nice}
 
 
 #### 以上get通信 ##################################
