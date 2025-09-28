@@ -136,8 +136,13 @@ async def nice_post(id: int):
         # 既存レコードを更新（ヘッダー名 "nice" に対応する列番号を探す）
         header = knowledge_sheet.row_values(1)  # 1行目（ヘッダー）
         nice_col = header.index("Nice") + 1  # 1始まりに変換
-
-        current_nice = int(knowledge_sheet.cell(row_index, nice_col).value)
+        
+        current_nice = knowledge_sheet.cell(row_index, nice_col).value
+        #データがなかったときにエラー出るからNull判定入れた　おおにし
+        if not current_nice:
+            current_nice = 0
+        else:
+            current_nice = int(current_nice)
         new_nice = current_nice + 1
         knowledge_sheet.update_cell(row_index, nice_col, new_nice)
 
