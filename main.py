@@ -130,11 +130,11 @@ async def nice_post(id: int):
     if row_index is None:
         # 存在しなければ新規追加（ヘッダーに合わせて列を並べる）
         knowledge_sheet.append_row([id, 1])  # 例: [id, nice] の順
-        return {"message": f"ID {id} に初めていいねしました！", "nice": 1}
+        return {"message": f"ID {id} に初めていいねしました！", "Nice": 1}
     else:
         # 既存レコードを更新（ヘッダー名 "nice" に対応する列番号を探す）
         header = knowledge_sheet.row_values(1)  # 1行目（ヘッダー）
-        nice_col = header.index("nice") + 1  # 1始まりに変換
+        nice_col = header.index("Nice") + 1  # 1始まりに変換
 
         current_nice = int(knowledge_sheet.cell(row_index, nice_col).value)
         new_nice = current_nice + 1
