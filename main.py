@@ -123,7 +123,7 @@ async def nice_post(id: int):
     
     row_index = None
     for idx, row in enumerate(records, start=2):  # データは2行目から
-        if row["id"] == id:
+        if row["ID"] == id:
             row_index = idx
             break
 
