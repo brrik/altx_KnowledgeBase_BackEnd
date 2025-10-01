@@ -58,11 +58,22 @@ filtered_knowledge, filtered_comments = get_filtered_data(
     target_id="3"
 )
 
-selected_Knoledge = get_all_value()
-print(selected_Knoledge)
-print(filtered_knowledge)
-print(filtered_comments)
+#selected_Knoledge = get_all_value()
+#print(selected_Knoledge)
+#print(filtered_knowledge)
+#print(filtered_comments)
 
+def search(query):
+    values = knowledge_sheet.get_all_values()
+    header = values[0]
+    body = values[1:]
+    df = pd.DataFrame(body, columns=header)
+    df =df[["ID", "Title", "PostedBy"]]
+    df = df[df.apply(lambda row: row.astype(str).str.contains(query).any(), axis=1)]
+    Serch_result = df.to_dict(orient='records')
+    return Serch_result
+serch_result = search(query="最近のブーム")
+print(serch_result)
 #ここからFastAPI用=============================================
 # CORS
 # 消さないで　担当大西
@@ -148,7 +159,11 @@ async def nice_post(id: int):
 
         return {"message": f"ID {id} にいいねしました！", "nice": new_nice}
 
-
+@app.get("/search/{query}")
+async def init_serch(query: str):
+    # serch関数を利用してデータを取得
+    serach_result = search(query)
+    return {"data": serach_result}
 #### 以上get通信 ##################################
 
 #### 以下post通信 #################################
