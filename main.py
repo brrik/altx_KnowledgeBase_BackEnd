@@ -183,6 +183,18 @@ async def post_knowledge(item: KnowledgeItem):
     add_knowledge(knowledge_sheet, item.dict())
     return {"message": "スプレッドシートにナレッジ追加成功", "posted_data": item}
 
+# コメント投稿用モデル
+class CommentItem(BaseModel):
+    KnowledgeID: str  # 対応するナレッジのID
+    PostedBy: str
+    Content: str
+
+# コメントをスプレッドシートに追加
+@app.post("/post-comment")
+async def post_comment(item: CommentItem):
+    add_comment(comment_sheet, item.dict())
+    return {"message": "スプレッドシートにコメント追加成功", "posted_data": item}
+
 
 
 #### 以上post通信 ###################################
