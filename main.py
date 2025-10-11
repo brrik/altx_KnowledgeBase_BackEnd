@@ -112,19 +112,24 @@ async def init_get_all_values():
     filtered_records = get_all_value()
     return {"data": filtered_records}
 
-#スプレッドシートから全レコード取得
+#詳細表示の際に全てのコメントを表示する
 @app.get("/items/{id}")
-async def init_get_all_values(id: str):
-    values = knowledge_sheet.get_all_values()
+async def get_item_with_comments(id: str):
+    # get_filtered_data関数を呼び出し
+    filtered_knowledge, filtered_comments = get_filtered_data(
+        knowledge_sheet,
+        comment_sheet,
+        target_id=id
+    )
 
-    # ヘッダー行を取得（1行目）
-    headers = values[0]
+    # データが存在しない場合のエラーハンドリング
+    if not filtered_knowledge:
+        return {"message": f"ID {id} のナレッジが見つかりません。"}
 
-    # データ行をループして対象IDを探す
-    for row in values[1:]:
-        if str(row[0]) == str(id):
-            # ヘッダーと行データを結合して辞書形式にする
-            return {"data": dict(zip(headers, row))}
+    return {
+        "knowledge": filtered_knowledge[0],  # 1件だけ返す（通常IDは一意）
+        "comments": filtered_comments        # 紐づくコメント全件
+    }
         
 #　ポストにいいねをする
 @app.get("/nice/{id}")
