@@ -99,7 +99,7 @@ async def init_get_items():
     # 必要なカラムだけ抽出（存在する場合のみ）＋上から5件
     filtered_records = [
         {k: row[k] for k in ["ID", "Title", "PostedBy", "Content"] if k in row}
-        for row in records[:10]
+        for row in records[:12]
     ]
 
     return {"data": filtered_records}
