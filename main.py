@@ -68,12 +68,10 @@ def search(query):
     header = values[0]
     body = values[1:]
     df = pd.DataFrame(body, columns=header)
-    df =df[["ID", "Title", "PostedBy"]]
-    df = df[df.apply(lambda row: row.astype(str).str.contains(query).any(), axis=1)]
+    df =df[["ID", "Title", "PostedBy", "Content", "Tag1", "Tag2", "Tag3"]]
+    df = df[df.apply(lambda row: row.astype(str).str.contains(query, case=False, regex=False).any(), axis=1)]
     Serch_result = df.to_dict(orient='records')
     return Serch_result
-serch_result = search(query="最近のブーム")
-print(serch_result)
 #ここからFastAPI用=============================================
 # CORS
 # 消さないで　担当大西
